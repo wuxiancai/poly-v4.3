@@ -5,7 +5,7 @@ XPATH配置文件
 """
 
 class XPathConfig:
-    # 登录相关
+    # 登录相关无需改动
     LOGIN_BUTTON = '//*[@id="__pm_viewport"]/nav[1]/div[1]/div[3]/div/nav/div/ul/div[1]/div/button'
     METAMASK_BUTTON = '//*[@id="authentication-modal"]/div/div[2]/div/div/div/div/div[3]/button[1]'
     # 交易按钮

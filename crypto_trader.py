@@ -1174,6 +1174,7 @@ class CryptoTrader:
         
             self.logger.info("金额设置完成")
             self.update_status("金额设置成功")
+            
         except Exception as e:
             self.logger.error(f"设置金额失败: {str(e)}")
             self.update_status("金额设置失败,请检查Cash值是否正确")
@@ -1252,8 +1253,6 @@ class CryptoTrader:
             )
             metamask_button.click()
             time.sleep(2)
-            
-            
             # 处理 MetaMask 弹窗
             # 模拟键盘操作序列
             # 1. 按5次TAB
@@ -1275,15 +1274,47 @@ class CryptoTrader:
             
             # 等待弹窗自动关闭
             time.sleep(0.3)
-            
-            self.logger.info("登录操作完成")
-            return True   
+            # 直接执行click_accept_button
+            self.logger.info("登录完成,执行click_accept_button")
+            self.click_accept_button()
+            return True
         except Exception as e:
             self.logger.error(f"登录操作失败: {str(e)}")
             return False
-    """以上代码执行了登录操作的函数,直到第 1244 行,程序执行返回到 748 行"""
+        
+    def click_accept_button(self):
+        """重新登录后,需要在amount输入框输入1并确认"""
+        self.logger.info("开始执行click_accept_button")
+        try:
+            # 等待输入框可见
+            amount_input = WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, XPathConfig.AMOUNT_INPUT))
+            )
+            
+            # 清除现有输入并输入新值
+            amount_input.clear()
+            amount_input.send_keys("1")
+            time.sleep(0.5)
+            
+            # 点击确认按钮
+            self.buy_confirm_button.invoke()
+            time.sleep(0.5)
+            
+            # 按ENTER确认
+            pyautogui.press('enter')
+            time.sleep(1)
+            
+            # 刷新页面
+            self.driver.refresh()
+            self.logger.info("click_accept_button执行完成")
+            
+        except Exception as e:
+            self.logger.error(f"click_accept_button执行失败: {str(e)}")
+            self.click_accept_button()
 
-    """以下代码是安排定时刷新页面的函数,直到第 1301 行"""
+    """以上代码执行了登录操作的函数,直到第 1315 行,程序执行返回到 748 行"""
+
+    """以下代码是安排定时刷新页面的函数,直到第 1370 行"""
     def schedule_refresh(self):
         """定时刷新页面"""
         if not self.running:
@@ -1338,7 +1369,7 @@ class CryptoTrader:
         self.is_trading = False
         
 
-    """以下代码是监控买卖条件及执行交易的函数,程序开始进入交易阶段,从 1345 行直到第 2000 行"""
+    """以下代码是监控买卖条件及执行交易的函数,程序开始进入交易阶段,从 1372 行直到第 2540 行"""
     def First_trade(self):
         try:
             self.start_trading_operation()
@@ -1993,9 +2024,9 @@ class CryptoTrader:
             self.update_status(f"Sell_no执行失败: {str(e)}")
         finally:
             self.end_trading_operation()
-    """以上代码是交易主体函数 1-4,从第 1345 行到第 2000 行"""
+    """以上代码是交易主体函数 1-4,从第 1370 行到第 2027行"""
 
-    """以下代码是交易过程中的各种方法函数，涉及到按钮的点击，从第 2002 行到第 2295 行"""
+    """以下代码是交易过程中的各种方法函数，涉及到按钮的点击，从第 2029 行到第 2295 行"""
     def click_website_button(self, button_type):
         try:
             if not self.driver:
@@ -2514,7 +2545,7 @@ class CryptoTrader:
             self.logger.warning("卖出only_sell_no验证失败,重试")
             return self.only_sell_no()
         
-    """以下代码是程序重启功能,从第 2572 行到第 2611 行"""
+    """以下代码是程序重启功能,从第 2548 行到第 2651 行"""
     def restart_program(self):
         """重启程序,保持浏览器打开"""
         try:
